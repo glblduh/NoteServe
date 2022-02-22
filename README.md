@@ -9,9 +9,10 @@ A simple notes app accessible using REST API
 
 ### Frontend
 1. Change directory to `frontend` folder
-2. Run `yarn build` to build the static files
-3. Set env variable `APIKEY` for password for REST API
-4. Run the backend
+2. Run `yarn install` to download dependencies
+3. Run `yarn build` to build the static files
+4. Set env variable `APIKEY` for password for REST API
+5. Run the backend
 
 ### Backend
 1. Change directory to `backend` folder
