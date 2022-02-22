@@ -12,8 +12,6 @@ docker-compose*
 .gitignore
 README.md
 LICENSE
-yarn.lock
-package-lock.json
 
 # local env files
 .env.local
