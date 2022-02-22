@@ -19,6 +19,8 @@ docker run -d --name noteserve \
 glbl/noteserve
 ```
 
+### Manual Installation
+
 *The `APIKEY` is required for the backend server to start, but you can just change the source code*
 
 *You can set a custom port by setting the `PORT` env variable*
