@@ -3,6 +3,22 @@ A simple notes app accessible using REST API
 
 ## Installation
 
+### Docker (recommended)
+
+1. Build image
+```
+docker build -t glbl/noteserve:latest .
+```
+2. Start container
+```
+docker run -d --name noteserve \
+-p 8787:8787 \
+-e APIKEY={PASSWORD} \
+-v noteserve:/noteserve/backend/data \
+--restart unless-stopped \
+glbl/noteserve
+```
+
 *The `APIKEY` is required for the backend server to start, but you can just change the source code*
 
 *You can set a custom port by setting the `PORT` env variable*
@@ -56,6 +72,3 @@ Endpoint: `/getnote/{NAMEOFNOTE}`
 Method: DELETE
 
 Endpoint: `/removenote/{NAMEOFNOTE}`
-
-## To-do's
-- Make into Docker image
