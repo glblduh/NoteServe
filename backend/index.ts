@@ -31,96 +31,66 @@ if (!fs.existsSync(notespath)) {
     }, null, 4));
 }
 
+app.use("/api", (req, res, next) => {
+    const key = req.get("Authorization")?.split(" ");
+    if (
+        key !== undefined &&
+        key[0] === "Bearer" &&
+        key[1] === APIKEY
+    ) {
+        next();
+    } else {
+        res.status(401).send({error: "Given API key is not valid"});
+    }
+})
+
 // The endpoints
 app.get("/", (req, res) => {
     res.sendFile(path.resolve("../dist/index.html"));
 });
 
-app.post("/addnote", (req, res, next) => {
-    const key = req.get("Authorization")?.split(" ");
+app.post("/api/addnote", (req, res, next) => {
     if (
-        key !== undefined &&
-        key[0] === "Bearer" &&
-        key[1] === APIKEY
+        req.body["name"] !== undefined ||
+        req.body["note"] !== undefined
     ) {
-        if (
-            req.body["name"] !== undefined ||
-            req.body["note"] !== undefined
-        ) {
-            fs.readFile(notespath, (err, data) => {
-                if (err) next(err);
-                let notes = JSON.parse(data.toString());
-                let added = {timeadded: Date.now(), note: req.body["note"]};
-                notes["notes"][req.body["name"]] = added;
-                fs.writeFile(notespath, JSON.stringify(notes, null, 4), {}, () => {
-                    res.status(200).send(added);
-                });
+        fs.readFile(notespath, (err, data) => {
+            if (err) next(err);
+            let notes = JSON.parse(data.toString());
+            let added = {timeadded: Date.now(), note: req.body["note"]};
+            notes["notes"][req.body["name"]] = added;
+            fs.writeFile(notespath, JSON.stringify(notes, null, 4), {}, () => {
+                res.status(200).send(added);
+            });
+        });
+    } else {
+        res.status(400).send({error: "Not all parameters are given. Needed are name and note"});
+    }
+});
+
+app.delete("/api/removenote/:name", (req, res, next) => {
+    fs.readFile(notespath, (err, data) => {
+        if (err) next(err);
+        let notes = JSON.parse(data.toString());
+        if (notes["notes"].hasOwnProperty(req.params.name)) {
+            let toberm = notes["notes"][req.params.name];
+            delete notes["notes"][req.params.name];
+            fs.writeFile(notespath, JSON.stringify(notes, null, 4), {}, () => {
+                toberm["timeremoved"] = Date.now();
+                res.status(200).send(toberm);
             });
         } else {
-            res.status(400).send({error: "Not all parameters are given. Needed are name and note"});
+            res.status(404).send({error: "Note not found"});
         }
-    } else {
-        res.status(401).send({error: "Given API key is not valid"});
-    }
+    });
 });
 
-app.get("/getnote/:name", (req, res, next) => {
-    const key = req.get("Authorization")?.split(" ");
-    if (
-        key !== undefined &&
-        key[0] === "Bearer" &&
-        key[1] === APIKEY
-    ) {
-        fs.readFile(notespath, (err, data) => {
-            if (err) next(err);
-            let notes = JSON.parse(data.toString());
-            let selected = JSON.stringify(notes["notes"][req.params.name]);
-            res.status(200).send(selected);
-        });
-    } else {
-        res.status(401).send({error: "Given API key is not valid"});
-    }
-});
-
-app.delete("/removenote/:name", (req, res, next) => {
-    const key = req.get("Authorization")?.split(" ");
-    if (
-        key !== undefined &&
-        key[0] === "Bearer" &&
-        key[1] === APIKEY
-    ) {
-        fs.readFile(notespath, (err, data) => {
-            if (err) next(err);
-            let notes = JSON.parse(data.toString());
-            if (notes["notes"].hasOwnProperty(req.params.name)) {
-                delete notes["notes"][req.params.name];
-                fs.writeFile(notespath, JSON.stringify(notes, null, 4), {}, () => {
-                    res.sendStatus(200);
-                });
-            } else {
-                res.status(404).send({error: "Note not found"});
-            }
-        });
-    } else {
-        res.status(401).send({error: "Given API key is not valid"});
-    }
-});
-
-app.get("/allnotes", (req, res, next) => {
-    const key = req.get("Authorization")?.split(" ");
-    if (
-        key !== undefined &&
-        key[0] === "Bearer" &&
-        key[1] === APIKEY
-    ) {
-        fs.readFile(notespath, (err, data) => {
-            if (err) next(err);
-            let notes = JSON.parse(data.toString());
-            res.status(200).send(notes["notes"]);
-        });
-    } else {
-        res.status(401).send({error: "Given API key is not valid"});
-    }
+app.get("/api/allnotes", (req, res, next) => {
+    fs.readFile(notespath, (err, data) => {
+        if (err) next(err);
+        let notes = JSON.parse(data.toString());
+        res.status(200).send(notes["notes"]);
+    });
 });
 
 app.listen(PORT, () => {

@@ -51,6 +51,7 @@
       <button :disabled="!keyentered" @click="getNotes">Load</button>
       <button :disabled="!keyentered" @click="selDelNote">Delete</button>
       <input type="password" v-model="key" placeholder="ENTER API KEY">
+      <button @click="clearKey">Logout</button>
       </div>
     </div>
     <div class="preview">
@@ -91,7 +92,7 @@ export default defineComponent({
   },
   methods: {
     getNotes: async function() {
-      let res = await fetch("/allnotes", {
+      let res = await fetch("/api/allnotes", {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + this.key,
@@ -125,7 +126,7 @@ export default defineComponent({
     },
     saveNote: async function() {
       if (this.saving) {
-        let res = await fetch("/addnote", {
+        let res = await fetch("/api/addnote", {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + this.key,
@@ -152,7 +153,7 @@ export default defineComponent({
         });
       }
     },
-    disableModal: function(e:Event) {
+    disableModal: function() {
       this.modalenabled = false;  
       this.selecting = false;  
       this.saving = false;  
@@ -160,7 +161,7 @@ export default defineComponent({
       this.deleting = false;
     },
     selDelNote: async function() {
-      let res = await fetch("/allnotes", {
+      let res = await fetch("/api/allnotes", {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + this.key,
@@ -183,7 +184,7 @@ export default defineComponent({
     delNote: async function(e:Event) {
       const target = e.target as HTMLInputElement;
       const value = target.value as string;
-      await fetch("/removenote/" + value, {
+      await fetch("/api/removenote/" + value, {
         method: "DELETE",
         headers: {
           "Authorization": "Bearer " + this.key,
@@ -191,6 +192,9 @@ export default defineComponent({
       });
       this.modalenabled = false;
       this.deleting = false;
+    },
+    clearKey: function() {
+      this.key = "";
     }
   },
   watch: {
@@ -351,10 +355,12 @@ export default defineComponent({
     align-items: center;
     text-align: center;
   }
-  .modal > .modalholder > .box > .notelist > button {
+  .modal > .modalholder > .box > .notelist > table > tr > td > button {
     cursor: pointer;
     border: 0;
-    border-radius: 5px;
+    background-color: #3C3C3C; 
+    border-radius: 2px;
+    color: #FFFFFF;
   }
   @media only screen and (max-device-width: 480px) {
     .main {
