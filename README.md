@@ -5,10 +5,11 @@ A simple notes app accessible using REST API
 
 ### Docker (recommended)
 
-1. Build image
+1. Pull image
 ```
-docker build -t glbl/noteserve:latest .
+docker pull glbl/noteserve:latest
 ```
+
 2. Start container
 ```
 docker run -d --name noteserve \
@@ -17,6 +18,11 @@ docker run -d --name noteserve \
 -v noteserve:/noteserve/backend/data \
 --restart unless-stopped \
 glbl/noteserve
+```
+
+*Build image*
+```
+docker build -t glbl/noteserve:latest .
 ```
 
 ### Manual Installation

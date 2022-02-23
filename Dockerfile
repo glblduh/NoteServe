@@ -2,7 +2,7 @@ FROM node:16-alpine as builder
 WORKDIR /noteserve
 COPY frontend/ /noteserve/frontend
 WORKDIR /noteserve/frontend
-RUN yarn install
+RUN yarn install --network-timeout 1000000
 RUN yarn build
 
 FROM node:16-alpine as prod
