@@ -1,6 +1,8 @@
 # NoteServe
 A simple notes app accessible using REST API
 
+**To access NoteServe's notes in the terminal and use your own text editor you may use [NoteServeCLI](https://github.com/glblduh/NoteServeCLI)**
+
 ## Installation
 
 ### Docker (recommended)
