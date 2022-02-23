@@ -64,19 +64,14 @@ Body:
 }
 ```
 
-Endpoint: `/addnote`
+Endpoint: `/api/addnote`
 
 ### Get all notes
 Method: GET
 
-Endpoint: `/allnotes`
-
-### Get note from name
-Method: GET
-
-Endpoint: `/getnote/{NAMEOFNOTE}`
+Endpoint: `/api/allnotes`
 
 ### Remove note
 Method: DELETE
 
-Endpoint: `/removenote/{NAMEOFNOTE}`
+Endpoint: `/api/removenote/{NAMEOFNOTE}`
